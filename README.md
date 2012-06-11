@@ -36,7 +36,7 @@ IsA.object?("anything that is derived from Object") # => true
  #Also on 1.9.2 there's no way of getting object_id of BasicObject, here it is:
 id = IsA.id_of(obj)
 ObjectSpace._id2ref(id) == obj # => true
-
+ #For 1.9.3 use BasicObject#__id__
 ```
 
 ## Contributing
