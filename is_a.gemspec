@@ -18,5 +18,4 @@ Gem::Specification.new do |gem|
   gem.extensions = "ext/is_a/extconf.rb"
 
   gem.add_development_dependency "rake-compiler"
-  gem.add_development_dependency "heap_dump"
 end
