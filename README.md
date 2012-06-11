@@ -1,6 +1,6 @@
 # IsA
 
-TODO: Write a gem description
+A small library of missing ruby methods for introspection. See Usage.
 
 ## Installation
 
@@ -18,7 +18,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'is_a'
+
+obj = BasicObject.new
+begin
+  obj.class
+rescue
+  puts "Yep, BasicObject will not tell you it's class"
+  cls = IsA.class_of(obj)
+  puts "But IsA will. It's #{cls}"
+end
+
+IsA.object?(obj) # => false
+IsA.object?("anything that is derived from Object") # => true
+
+ #Also on 1.9.2 there's no way of getting object_id of BasicObject, here it is:
+id = IsA.id_of(obj)
+ObjectSpace._id2ref(id) == obj # => true
+
+```
 
 ## Contributing
 
