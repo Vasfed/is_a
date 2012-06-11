@@ -6,6 +6,9 @@ Rake::ExtensionTask.new('is_a')
 
 desc "Simple dump test,just to check if extension compiles and does not segfault on simple dump"
 task :test => :compile do
+
+  #TODO: use some testing framework like minitest...
+
   require "bundler/setup"
   require 'is_a'
 
@@ -43,9 +46,21 @@ task :test => :compile do
     puts "Getref FAIL"
   end
 
+  unless IsA.object?(obj)
+    puts "object? ok"
+  else
+    puts "object? FAIL"
+  end
 
-  require 'heap_dump'
-  HeapDump.dump
+  if IsA.object?(c)
+    puts "object? ok"
+  else
+    puts "object? FAIL"
+  end
+
+
+  #require 'heap_dump'
+  #HeapDump.dump
 end
 
 task :default => :test
