@@ -34,7 +34,7 @@ IsA.object?(obj) # => false
 IsA.object?("anything that is derived from Object") # => true
 
  #Also on 1.9.2 there's no way of getting object_id of BasicObject, here it is:
-id = IsA.id_of(obj)
+id = IsA.id_of(obj) # or alias ObjectSpace._ref2id(obj)
 ObjectSpace._id2ref(id) == obj # => true
  #For 1.9.3 use BasicObject#__id__
 ```

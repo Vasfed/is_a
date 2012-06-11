@@ -13,4 +13,16 @@ module IsA
       return false
     end
   end
+
+  def self._ref2id obj
+    self.id_of(obj)
+  end
+end
+
+unless ObjectSpace.respond_to? :_ref2id
+  module ObjectSpace
+    def self._ref2id(obj)
+      IsA._ref2id(obj)
+    end
+  end
 end
