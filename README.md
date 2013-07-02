@@ -46,6 +46,8 @@ ObjectSpace._id2ref(id) == obj # => true
 
 Ruby's `caller` is handy, but sometimes you do not need the whole array of strings it allocates generates on each call.
 
+`IsA.caller_line` (also global `caller_line`) is a lot faster and does not mess your heap that lot (allocates just the result string, meaning fewer GC):
+
 ```ruby
 require 'is_a'
 require 'benchmark'
@@ -56,13 +58,14 @@ Benchmark.bm(11) do |x|
 end
 ```
 
-results in:
+Results:
 
 ```
                   user     system      total        real
 caller[1]     0.430000   0.010000   0.440000 (  0.443102)
 caller_line   0.010000   0.000000   0.010000 (  0.002275)
 ```
+
 
 ## Contributing
 
