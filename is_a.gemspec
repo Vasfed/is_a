@@ -19,4 +19,5 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency("debugger-ruby_core_source")
   gem.add_development_dependency "rake-compiler"
+  gem.add_development_dependency "minitest"
 end
