@@ -18,6 +18,9 @@ Or install it yourself as:
 
 ## Usage
 
+### BasicObject
+If you got an object via `_id2ref` or from similar place - do not rush to duck-typing, it may be a BasicObject and not respond to `respond_to?`. IsA aims in handling such cases.
+
 ```ruby
 require 'is_a'
 
