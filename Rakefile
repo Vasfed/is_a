@@ -67,10 +67,16 @@ task :test => :compile do
   test_caller
 
   require 'benchmark'
-  n = 10000
-  Benchmark.bm(11) do |x|
+  n = 50000
+  class UtilClassWithCallerline
+    class << self
+      define_method :caller_line, method(:caller_line)
+    end
+  end
+  Benchmark.bm(19) do |x|
     x.report("caller[1]") { n.times { caller[1] } }
     x.report("caller_line") { n.times { caller_line(1) } }
+    x.report("caller_line in ctx") { n.times { UtilClassWithCallerline.caller_line(1) } }
   end
 
   #require 'heap_dump'

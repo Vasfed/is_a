@@ -6,7 +6,9 @@ A small library of missing ruby methods for introspection. See Usage.
 
 Add this line to your application's Gemfile:
 
-    gem 'is_a'
+```ruby
+gem 'is_a'
+```
 
 And then execute:
 
@@ -42,7 +44,7 @@ ObjectSpace._id2ref(id) == obj # => true
  #For 1.9.3 use BasicObject#__id__
 ```
 
-### Fast getting of lines from caller
+### Fast single line from caller
 
 Ruby's `caller` is handy, but sometimes you do not need the whole array of strings it allocates generates on each call.
 
