@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'benchmark'
 require 'is_a'
 
 describe IsA do
@@ -17,30 +18,34 @@ describe IsA do
     subject.object?("string is object").must_equal true
   end
 
-  it "caller for regular functions" do
-    def test_caller
-      [caller[0], subject.caller_line(0)]
+  describe "caller_line" do
+    it "in methods" do
+      def test_caller
+        [caller[0], subject.caller_line(0)]
+      end
+      r = test_caller
+      r.first.must_equal r.last
     end
-    r = test_caller
-    r.first.must_equal r.last
 
-    # require 'benchmark'
-    # n = 50000
-    # class UtilClassWithCallerline
-    #   class << self
-    #     define_method :caller_line, method(:caller_line)
-    #   end
-    # end
-    # Benchmark.bm(19) do |x|
-    #   x.report("caller[1]") { n.times { caller[1] } }
-    #   x.report("caller_line") { n.times { caller_line(1) } }
-    #   x.report("caller_line in ctx") { n.times { UtilClassWithCallerline.caller_line(1) } }
-    # end
-  end
+    it "in blocks" do
+      r = proc{
+        [caller[0], subject.caller_line(0)]
+      }.call
+      r.last.wont_be_nil
+      r.first.must_equal r.last
+    end
 
-  it "caller_line for generic context" do
-    subject.caller_line(0).wont_be_nil
-    subject.caller_line(0).must_equal caller[0]
+    it "should be faster than caller[0]" do
+      n = 1000
+      anchor = Benchmark.measure{ n.times{ caller[0] } }
+      res = Benchmark.measure{ n.times{ subject.caller_line(0) } }
+      assert_operator res.total, :<, anchor.total
+      assert_operator res.real, :<, anchor.real
+      assert_operator res.utime, :<, anchor.utime
+
+      # no large memory allocation => no system cpu time
+      res.stime.must_equal 0.0
+    end
   end
 
 end
