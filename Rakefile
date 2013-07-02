@@ -58,6 +58,20 @@ task :test => :compile do
     puts "object? FAIL"
   end
 
+  def test_caller
+    puts "Real caller: #{caller[0]}"
+    puts "Caller at 0: #{IsA.caller_line(0)}"
+    puts caller_line
+  end
+
+  test_caller
+
+  require 'benchmark'
+  n = 10000
+  Benchmark.bm(11) do |x|
+    x.report("caller[1]") { n.times { caller[1] } }
+    x.report("caller_line") { n.times { caller_line(1) } }
+  end
 
   #require 'heap_dump'
   #HeapDump.dump

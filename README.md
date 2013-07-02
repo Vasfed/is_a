@@ -39,6 +39,28 @@ ObjectSpace._id2ref(id) == obj # => true
  #For 1.9.3 use BasicObject#__id__
 ```
 
+### Fast getting of lines from caller
+
+Ruby's `caller` is handy, but sometimes you do not need the whole array of strings it allocates generates on each call.
+
+```ruby
+require 'is_a'
+require 'benchmark'
+n = 10000
+Benchmark.bm(11) do |x|
+  x.report("caller[1]") { n.times { caller[1] } }
+  x.report("caller_line") { n.times { caller_line(1) } }
+end
+```
+
+results in:
+
+```
+                  user     system      total        real
+caller[1]     0.430000   0.010000   0.440000 (  0.443102)
+caller_line   0.010000   0.000000   0.010000 (  0.002275)
+```
+
 ## Contributing
 
 1. Fork it

@@ -17,5 +17,6 @@ Gem::Specification.new do |gem|
 
   gem.extensions = "ext/is_a/extconf.rb"
 
+  gem.add_dependency("debugger-ruby_core_source")
   gem.add_development_dependency "rake-compiler"
 end
