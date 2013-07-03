@@ -35,13 +35,17 @@ static VALUE caller_line(int offset)
   rb_control_frame_t* cfp = th->cfp + offset;
   const rb_control_frame_t* stack_end = (void *)(th->stack + th->stack_size);
 
-  if(cfp < stack_end){
+  VALUE name = 0;
+
+  while(cfp < stack_end){
     if (cfp->iseq != 0) {
       if (cfp->pc != 0) {
         rb_iseq_t *iseq = cfp->iseq;
         int line_no = rb_vm_get_sourceline(cfp);
-        VALUE file = iseq->filename,
-              name = iseq->name;
+        VALUE file = iseq->filename;
+        //name may be passed from previous iteration
+        if(!name)
+          name = iseq->name;
         if (line_no) {
           return rb_enc_sprintf(
                 rb_enc_compatible(file, name),
@@ -55,12 +59,26 @@ static VALUE caller_line(int offset)
         }
       }
     } else {
-      // printf("CFUNC\n");
-      return Qnil;
+      // for CFUNCs - search for previous ruby frame for location
+      if (RUBYVM_CFUNC_FRAME_P(cfp)) {
+        if (!name){
+          ID id;
+          if (cfp->me->def)
+            id = cfp->me->def->original_id;
+          else
+            id = cfp->me->called_id;
+          if (id != ID_ALLOCATOR){
+            name = rb_id2str(id);
+          }
+        }
+      }
+      cfp += 1;
+      continue;
     }
-  } else {
-    // level is out of bounds
+    break;
   }
+
+  // level is out of bounds
   return Qnil;
 }
 
