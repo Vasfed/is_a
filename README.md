@@ -63,9 +63,9 @@ end
 Results:
 
 ```
-                  user     system      total        real
-caller[1]     0.430000   0.010000   0.440000 (  0.443102)
-caller_line   0.010000   0.000000   0.010000 (  0.002275)
+                          user     system      total        real
+caller[1]             1.760000   0.040000   1.800000 (  1.802799)
+caller_line           0.080000   0.000000   0.080000 (  0.089649)
 ```
 
 
