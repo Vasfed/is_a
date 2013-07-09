@@ -2,6 +2,8 @@
 
 A small library of missing ruby methods for introspection. See Usage.
 
+[![Build Status](https://travis-ci.org/Vasfed/is_a.png)](https://travis-ci.org/Vasfed/is_a) [![Dependencies](https://gemnasium.com/Vasfed/is_a.png?travis)](https://gemnasium.com/Vasfed/is_a)
+
 ## Installation
 
 Add this line to your application's Gemfile:
