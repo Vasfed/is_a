@@ -24,6 +24,27 @@ rb_object_id_of(VALUE self, VALUE obj)
 #include "ruby/encoding.h"
 #include "vm_core.h"
 
+#ifndef ID_ALLOCATOR
+#define ID_ALLOCATOR 0
+#endif
+
+#ifndef HAVE_RB_VM_GET_SOURCELINE
+inline static int
+calc_lineno(const rb_iseq_t *iseq, const VALUE *pc)
+{
+    return rb_iseq_line_no(iseq, pc - iseq->iseq_encoded);
+}
+int rb_vm_get_sourceline(const rb_control_frame_t * cfp){
+  int lineno = 0;
+  const rb_iseq_t *iseq = cfp->iseq;
+
+  if (RUBY_VM_NORMAL_ISEQ_P(iseq)) {
+  lineno = calc_lineno(cfp->iseq, cfp->pc);
+  }
+  return lineno;
+}
+#endif
+
 #define HAVE_CALLER_AT
 static VALUE caller_line(int offset)
 {
@@ -42,10 +63,22 @@ static VALUE caller_line(int offset)
       if (cfp->pc != 0) {
         rb_iseq_t *iseq = cfp->iseq;
         int line_no = rb_vm_get_sourceline(cfp);
+
+        #ifndef HAVE_RB_ISEQ_T_LOCATION
         VALUE file = iseq->filename;
+        #else
+        VALUE file = iseq->location.path;
+        #endif
+
         //name may be passed from previous iteration
         if(!name)
-          name = iseq->name;
+          name =
+          #ifdef HAVE_RB_ISEQ_T_LOCATION
+            iseq->location.label;
+          #else
+            iseq->name;
+          #endif
+
         if (line_no) {
           return rb_enc_sprintf(
                 rb_enc_compatible(file, name),

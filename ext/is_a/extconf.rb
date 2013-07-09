@@ -19,6 +19,8 @@ hdrs = ->{
   res = %w{
     vm_core.h
   }.all?{|hdr| have_header(hdr)}
+  have_struct_member("rb_iseq_t", "location", "vm_core.h")
+  have_func("rb_vm_get_sourceline", "vm_core.h")
   res
 }
 
