@@ -28,7 +28,10 @@ rb_object_id_of(VALUE self, VALUE obj)
 #define ID_ALLOCATOR 0
 #endif
 
-#ifndef HAVE_RB_VM_GET_SOURCELINE
+#if !defined(HAVE_RB_VM_GET_SOURCELINE) && defined(HAVE_RB_ISEQ_LINE_NO)
+#include "method.h"
+#include "iseq.h"
+
 inline static int
 calc_lineno(const rb_iseq_t *iseq, const VALUE *pc)
 {
