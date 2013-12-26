@@ -27,23 +27,34 @@ hdrs = ->{
   res
 }
 
-if RUBY_PATCHLEVEL < 0 && !Debugger::RubyCoreSource::REVISION_MAP[RUBY_REVISION]
-  puts "RubyCoreSource does not have support for your ruby revision, trying a workaround..."
+module Debugger::RubyCoreSource
+  class NoSourceException < RuntimeError; end
+  # instead of aborting - throw an error
+  def self.no_source_abort *args
+    raise NoSourceException
+  end
+end
+
+begin
+  exit if Debugger::RubyCoreSource::create_makefile_with_core(hdrs, "is_a")
+rescue Debugger::RubyCoreSource::NoSourceException
+  STDERR.print("RubyCoreSource does not have support for your ruby revision\n")
+end
+
+if ruby_include
+  puts "trying a workaround..."
   with_cppflags("-I" + ruby_include) {
     if hdrs.call
       create_makefile('is_a')
-    else
-      STDERR.print("Makefile creation failed\n")
-      exit(1)
+      exit
     end
   }
-else
-  if !Debugger::RubyCoreSource::create_makefile_with_core(hdrs, "is_a")
-    STDERR.print("Makefile creation failed\n")
-    STDERR.print("*************************************************************\n\n")
-    STDERR.print("  NOTE: If your headers were not found, try passing\n")
-    STDERR.print("        --with-ruby-include=PATH_TO_HEADERS      \n\n")
-    STDERR.print("*************************************************************\n\n")
-    exit(1)
-  end
 end
+
+
+STDERR.print("Makefile creation failed\n")
+STDERR.print("*************************************************************\n\n")
+STDERR.print("  NOTE: If your headers were not found, try passing\n")
+STDERR.print("        --with-ruby-include=PATH_TO_HEADERS      \n\n")
+STDERR.print("*************************************************************\n\n")
+exit(1)
