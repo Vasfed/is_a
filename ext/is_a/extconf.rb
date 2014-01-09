@@ -23,7 +23,8 @@ hdrs = ->{
     vm_core.h
   }.all?{|hdr| have_header(hdr)}
   have_struct_member("rb_iseq_t", "location", "vm_core.h")
-  res = res && (have_func("rb_vm_get_sourceline", "vm_core.h") || have_func("rb_iseq_line_no", ["vm_core.h", "method.h", "iseq.h"]))
+  # 2.0.0+ has inaccessible rb_vm_get_sourceline (cannot link in runtime), but has rb_iseq_line_no
+  res = res && (have_func("rb_iseq_line_no", ["vm_core.h", "method.h", "iseq.h"]) || have_func("rb_vm_get_sourceline", "vm_core.h"))
   res
 }
 

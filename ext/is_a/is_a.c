@@ -28,7 +28,7 @@ rb_object_id_of(VALUE self, VALUE obj)
 #define ID_ALLOCATOR 0
 #endif
 
-#if !defined(HAVE_RB_VM_GET_SOURCELINE) && defined(HAVE_RB_ISEQ_LINE_NO)
+#ifdef HAVE_RB_ISEQ_LINE_NO
 #include "method.h"
 #include "iseq.h"
 
@@ -37,12 +37,13 @@ calc_lineno(const rb_iseq_t *iseq, const VALUE *pc)
 {
     return rb_iseq_line_no(iseq, pc - iseq->iseq_encoded);
 }
-int rb_vm_get_sourceline(const rb_control_frame_t * cfp){
+#define rb_vm_get_sourceline rb_vm_get_sourceline_static
+static int rb_vm_get_sourceline_static(const rb_control_frame_t * cfp){
   int lineno = 0;
   const rb_iseq_t *iseq = cfp->iseq;
 
   if (RUBY_VM_NORMAL_ISEQ_P(iseq)) {
-  lineno = calc_lineno(cfp->iseq, cfp->pc);
+    lineno = calc_lineno(cfp->iseq, cfp->pc);
   }
   return lineno;
 }
